@@ -131,7 +131,7 @@ export default function App() {
     const pipeTop = gameHeight - GROUND_HEIGHT - pipeHeight;
     const pipeBottom = gameHeight - GROUND_HEIGHT;
 
-    // ---- COIN COLLISION ----
+
     const coinLeft = coinXRef.current;
     const coinRight = coinLeft + COIN_SIZE;
     const coinTop = coinYRef.current;
@@ -144,8 +144,8 @@ export default function App() {
       marioTop < coinBottom;
 
     if (hitCoin) {
-      setScore(s => s + 5);     // bonus points
-      setCoinX(gameWidth + 400);  // respawn coin
+      setScore(s => s + 5);   
+      setCoinX(gameWidth + 400); 
     }
 
     const hitPipe =
