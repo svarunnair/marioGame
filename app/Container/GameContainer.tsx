@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, StyleSheet, TouchableWithoutFeedback, Text, ImageBackground } from "react-native";
+import { View, StyleSheet, TouchableWithoutFeedback, Text, ImageBackground, Keyboard, Image } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const GRAVITY = 0.6;
 const JUMP_FORCE = -12;
@@ -36,9 +37,20 @@ export default function GameContainer() {
 
   const birdXRef = useRef(0);
   const birdYRef = useRef(0);
+  const [playerName, setPlayerName] = useState("");
+  const [marioModalrio, setMarioModalrio] = useState("");
 
+        
 
   useEffect(() => {
+
+    const loadPlayerData = async () => {
+    const name = await AsyncStorage.getItem("playerName");
+    const maModalrio = await AsyncStorage.getItem("marioModal");
+    setMarioModalrio(maModalrio||"");
+    setPlayerName(name || "Player");
+  };
+  loadPlayerData();
     const interval = setInterval(() => {
       setCoinSpin(s => s + 10);
     }, 50);
@@ -270,17 +282,62 @@ export default function GameContainer() {
             setGameHeight(height);
           }}
         >
-          <Text style={styles.score}>{score}</Text>
 
-
-          <View style={[styles.mario, { top: marioY }]}>
-            <View style={styles.hat} />
-            <View style={styles.face}>
-              <View style={styles.mustache} />
-            </View>
-            <View style={styles.body} />
-            <View style={styles.shoes} />
+          <View style={{height:30,marginTop:40,justifyContent:"space-between",flexDirection:"row",paddingHorizontal:5}}>
+             <Text style={{fontSize:25,color:"white"}}>{score}</Text>
+             <View style={{flexDirection:"row",alignItems:"center",gap:5}}>
+              <Image source={require("../../assets/images/Super-Mario.png")} style={{width:25,height:25}} />
+              <Text style={{fontSize:25,color:"white"}}>{playerName}</Text>
+             </View>
+           
           </View>
+         
+
+
+         <View style={[styles.mario, { top: marioY }]}>
+  {/* Hat */}
+  <View style={styles.hat}>
+    {/* <Text style={styles.hatText}>{playerName}</Text> */}
+  </View>
+
+  {/* Face */}
+  <View style={styles.face}>
+    {/* Eyes */}
+    <View style={styles.eyes}>
+      <View style={styles.eye} />
+      <View style={styles.eye} />
+    </View>
+
+    {/* Mustache */}
+    <View style={styles.mustache} />
+  </View>
+
+  {/* Body (Overalls) */}
+  <View style={[styles.body,{ backgroundColor:
+      marioModalrio === "classic"
+        ? "#1c40ae"
+        : marioModalrio === "fire"
+        ? "#d2351d"
+        : marioModalrio === "ice"
+        ? "#f1c40f"
+        : marioModalrio === "shadow"
+        ? "#913fa1"
+        : "#3498db",}]}>
+    <View style={styles.buttonLeft} />
+    <View style={styles.buttonRight} />
+  </View>
+
+  {/* Arms */}
+  <View style={styles.armLeft} />
+  <View style={styles.armRight} />
+
+  {/* Shoes */}
+  <View style={styles.shoes} />
+
+  {/* Shadow */}
+  {/* <View style={styles.shadow} /> */}
+</View>
+
 
 
           <View style={[styles.bird, { left: birdX, top: birdY }]}>
@@ -326,6 +383,7 @@ export default function GameContainer() {
 
           {gameOver && (
             <View style={styles.gameOverBox}>
+          
               <Text style={{ color: "white", fontSize: 20, fontWeight: 500 }}>Score : {score}</Text>
               <Text style={styles.gameOverText}>GAME OVER</Text>
               <Text style={styles.restartText}>Tap to Restart</Text>
@@ -357,52 +415,126 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
 
-  mario: {
-    position: "absolute",
-    left: 80,
-    width: MARIO_WIDTH,
-    height: MARIO_HEIGHT,
-    alignItems: "center",
-  },
+ mario: {
+  position: "absolute",
+  left: 80,
+  width: MARIO_WIDTH,
+  height: MARIO_HEIGHT + 25,
+  alignItems: "center",
+},
 
-  hat: {
-    width: 40,
-    height: 10,
-    backgroundColor: "red",
-    borderTopLeftRadius: 5,
-    borderTopRightRadius: 5,
-  },
+hat: {
+  width: 45,
+  height: 14,
+  backgroundColor: "#e74c3c",
+  borderTopLeftRadius: 8,
+  borderTopRightRadius: 8,
+  justifyContent: "center",
+  alignItems: "center",
+  borderWidth: 2,
+  borderColor: "#c0392b",
+},
 
-  face: {
-    width: 30,
-    height: 20,
-    backgroundColor: "#f5c28b",
-    borderRadius: 4,
-  },
+hatText: {
+  color: "white",
+  fontSize: 10,
+  fontWeight: "bold",
+},
 
-  mustache: {
-    width: 18,
-    height: 4,
-    backgroundColor: "brown",
-    marginTop: 10,
-    borderRadius: 2,
-    alignSelf: "center",
-  },
+face: {
+  width: 34,
+  height: 24,
+  backgroundColor: "#f5c28b",
+  borderRadius: 6,
+  alignItems: "center",
+  justifyContent: "center",
+},
 
-  body: {
-    width: 35,
-    height: 20,
-    backgroundColor: "blue",
-    borderRadius: 4,
-  },
+eyes: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  width: 18,
+},
 
-  shoes: {
-    width: 35,
-    height: 10,
-    backgroundColor: "brown",
-    borderRadius: 4,
-    marginTop: 2,
-  },
+eye: {
+  width: 4,
+  height: 6,
+  backgroundColor: "#000",
+  borderRadius: 2,
+},
+
+mustache: {
+  width: 18,
+  height: 4,
+  backgroundColor: "#4b2c20",
+  borderRadius: 2,
+  marginTop: 2,
+},
+
+body: {
+  width: 38,
+  height: 22,
+  backgroundColor: "#3498db",
+  borderRadius: 5,
+  marginTop: 2,
+  borderWidth: 2,
+  borderColor: "#21618c",
+  flexDirection: "row",
+  justifyContent: "space-around",
+  alignItems: "center",
+},
+
+buttonLeft: {
+  width: 4,
+  height: 4,
+  backgroundColor: "#f1c40f",
+  borderRadius: 2,
+},
+
+buttonRight: {
+  width: 4,
+  height: 4,
+  backgroundColor: "#f1c40f",
+  borderRadius: 2,
+},
+
+armLeft: {
+  position: "absolute",
+  left: -8,
+  top: 45,
+  width: 10,
+  height: 4,
+  backgroundColor: "#f5c28b",
+  borderRadius: 2,
+},
+
+armRight: {
+  position: "absolute",
+  right: -8,
+  top: 45,
+  width: 10,
+  height: 4,
+  backgroundColor: "#f5c28b",
+  borderRadius: 2,
+},
+
+shoes: {
+  width: 36,
+  height: 10,
+  backgroundColor: "#6e2c00",
+  borderRadius: 4,
+  marginTop: 2,
+},
+
+shadow: {
+  position: "absolute",
+  bottom: -6,
+  width: 30,
+  height: 6,
+  backgroundColor: "rgba(0,0,0,0.3)",
+  borderRadius: 50,
+},
+
 
   pipeWrapper: {
     position: "absolute",
@@ -518,6 +650,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     elevation: 5,
   },
+  
 
 
 
