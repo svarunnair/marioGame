@@ -57,6 +57,9 @@ export default function GameContainer() {
     return () => clearInterval(interval);
   }, []);
 
+
+  console.log('object')
+
   // const birdLeft = birdXRef.current;
   // const birdRight = birdLeft + BIRD_WIDTH;
   // const birdTop = birdYRef.current;
