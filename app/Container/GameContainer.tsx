@@ -69,6 +69,10 @@ export default function GameContainer() {
          console.log('object')
               console.log('object')
          console.log('object')     
+         console.log('object')
+         console.log('object')
+              console.log('object')
+         console.log('object')    
 
 
   // const birdLeft = birdXRef.current;
